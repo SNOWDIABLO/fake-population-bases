@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace Oxide.Plugins
 {
-    [Info("FakePopulationBases", "Alexi", "2.0.0")]
+    [Info("FakePopulationBases", "Alexi", "2.0.1")]
     [Description("Spawns fake honeypot bases via CopyPaste templates to simulate player population")]
     public class FakePopulationBases : RustPlugin
     {
@@ -572,13 +572,13 @@ namespace Oxide.Plugins
                 }
                 else if (ent.ShortPrefabName == "campfire" && ent is BaseOven fire)
                 {
-                    fire.SetFlag(BaseEntity.Flags.On, false);
+                    using (var __flags = fire.StartSetFlags(BaseEntity.FlagsUpdateMode.SendNetworkUpdate)) __flags.Set(BaseEntity.Flags.On, false);
                 }
                 else if (ent is CodeLock codeLock && !codeLock.hasCode)
                 {
                     codeLock.code = UnityEngine.Random.Range(1000, 9999).ToString();
                     codeLock.hasCode = true;
-                    codeLock.SetFlag(BaseEntity.Flags.Locked, true);
+                    using (var __flags = codeLock.StartSetFlags(BaseEntity.FlagsUpdateMode.SendNetworkUpdate)) __flags.Set(BaseEntity.Flags.Locked, true);
                     codeLock.SendNetworkUpdate();
                 }
             }
@@ -760,12 +760,12 @@ namespace Oxide.Plugins
                     {
                         if (oven.inventory == null || oven.inventory.itemList.Count == 0)
                             AddFuelToOven(oven, 50);
-                        oven.SetFlag(BaseEntity.Flags.On, true);
+                        using (var __flags = oven.StartSetFlags(BaseEntity.FlagsUpdateMode.SendNetworkUpdate)) __flags.Set(BaseEntity.Flags.On, true);
                     }
                 }
                 else if (oven.IsOn())
                 {
-                    oven.SetFlag(BaseEntity.Flags.On, false);
+                    using (var __flags = oven.StartSetFlags(BaseEntity.FlagsUpdateMode.SendNetworkUpdate)) __flags.Set(BaseEntity.Flags.On, false);
                 }
             }
         }
